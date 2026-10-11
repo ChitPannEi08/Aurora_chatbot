@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aurora — AI Chatbot powered by Gemini</title>
+  <meta name="description"
+    content="Aurora is a modern AI chatbot powered by Google Gemini with persistent chat history." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap"
+    rel="stylesheet" />
+
+  <!-- Marked.js for Markdown rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- Highlight.js for code syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+
+<body>
+  <!-- ══════════════════════════════════════════════════════════
+     SIDEBAR
+═══════════════════════════════════════════════════════════ -->
+  <aside class="sidebar" id="sidebar">
+
+    <!-- Logo -->
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-text">aurora</span>
+      </div>
+      <button class="btn-icon" id="btn-toggle-sidebar" title="Close sidebar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- New Chat -->
+    <button class="btn-new-chat" id="btn-new-chat">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="12" y1="5" x2="12" y2="19" />
+        <line x1="5" y1="12" x2="19" y2="12" />
+      </svg>
+      New Chat
+    </button>
+
+    <!-- Session List -->
+    <div class="session-list-label">Recent Chats</div>
+    <nav class="session-list" id="session-list" role="list" aria-label="Chat history"></nav>
+
+    <!-- Footer -->
+    <div class="sidebar-footer">
+      <div class="status-indicator" id="status-indicator">
+        <span class="status-dot" id="status-dot"></span>
+        <span id="status-text">Checking connection…</span>
+      </div>
+      <p class="powered-by">Powered by <span>Google Gemini</span></p>
+    </div>
+  </aside>
+
+  <!-- ══════════════════════════════════════════════════════════
+     MAIN CONTENT
+═══════════════════════════════════════════════════════════ -->
+  <main class="main-content" id="main-content">
+
+    <!-- Top Bar -->
+    <header class="topbar">
+      <button class="btn-icon" id="btn-sidebar-toggle-mobile" title="Toggle sidebar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </button>
+      <h1 class="topbar-title" id="topbar-title">aurora</h1>
+      <button class="btn-icon" id="btn-clear-chat" title="Clear current chat" style="visibility:hidden;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="3 6 5 6 21 6" />
+          <path d="M19 6l-1 14H6L5 6" />
+          <path d="M10 11v6M14 11v6" />
+          <path d="M9 6V4h6v2" />
+        </svg>
+      </button>
+    </header>
+
+    <!-- Chat Messages -->
+    <div class="chat-area" id="chat-area">
+
+      <!-- Welcome Screen -->
+      <div class="welcome-screen" id="welcome-screen">
+        <h2 class="welcome-title">Hello, I'm Aurora</h2>
+        <p class="welcome-subtitle">Your intelligent AI assistant powered by Google Gemini.<br />How can I help you
+          today?</p>
+        <div class="suggestion-grid" id="suggestion-grid">
+          <button class="suggestion-card" data-prompt="Explain quantum computing in simple terms">
+            <div class="suggestion-icon">⚛️</div>
+            <span>Explain quantum computing</span>
+          </button>
+          <button class="suggestion-card" data-prompt="Write a Python function to sort a list of dictionaries by a key">
+            <div class="suggestion-icon">🐍</div>
+            <span>Python sorting snippet</span>
+          </button>
+          <button class="suggestion-card" data-prompt="Give me 5 creative startup ideas in the AI space">
+            <div class="suggestion-icon">💡</div>
+            <span>AI startup ideas</span>
+          </button>
+          <button class="suggestion-card" data-prompt="Write a short poem about the beauty of the night sky">
+            <div class="suggestion-icon">🌌</div>
+            <span>Poem about the night sky</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Messages Container -->
+      <div class="messages-container" id="messages-container"></div>
+
+    </div>
+
+    <!-- Input Bar -->
+    <div class="input-bar-wrapper">
+      <div class="input-bar" id="input-bar">
+        <textarea id="message-input" class="message-textarea" placeholder="Message Aurora…" rows="1"
+          aria-label="Chat message input"></textarea>
+        <button class="btn-send" id="btn-send" title="Send message" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="22" y1="2" x2="11" y2="13" />
+            <polygon points="22 2 15 22 11 13 2 9 22 2" />
+          </svg>
+        </button>
+      </div>
+      <p class="input-disclaimer">Aurora can make mistakes. Consider checking important information.</p>
+    </div>
+
+  </main>
+
+  <!-- ══════════════════════════════════════════════════════════
+     MOBILE SIDEBAR OVERLAY
+═══════════════════════════════════════════════════════════ -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <script src="/static/js/app.js"></script>
+</body>
+
+</html>
